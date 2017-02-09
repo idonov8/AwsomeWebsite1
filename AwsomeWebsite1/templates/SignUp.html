@@ -1,0 +1,40 @@
+<!doctype html>
+<!--
+
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+
+<meta name="google-signin-client_id" content="256940704567-4ta4m3aic8dn9gtnj12pfianjckrgrag.apps.googleusercontent.com.apps.googleusercontent.com">
+
+<script src="https://apis.google.com/js/api.js"></script>
+<script type="text/javascript">
+gapi.load('auth2', function(){
+gapi.auth2.init()
+})
+</script>
+
+<script type="text/javascript">
+	function onSignIn(googleUser) {
+	  var profile = googleUser.getBasicProfile();
+	  console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+	  console.log('Name: ' + profile.getName());
+	  console.log('Image URL: ' + profile.getImageUrl());
+	  console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+}
+</script>
+
+
+<div class="g-signin2" data-onsuccess="onSignIn"></div>
+-->
+
+<form action = {{ url_for('SignUp')}} method="post"> 
+Name:<br>
+  <input type="text" name="name"><br>
+  Email Address:<br>
+  <input type="text" name="email"><br>
+  Password:<br>
+  <input type="password" name="password"><br>
+
+  <input type="submit" value="Create Account">
+
+</form>
+
