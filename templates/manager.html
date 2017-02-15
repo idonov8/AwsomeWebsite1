@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Manager</title>
+	<h1>Competition Manager Page</h1>
+	<h2>Creat A New Competition</h2>
+</head>
+<body>
+
+<form action="{{url_for('manager')}}" method="post">
+	Competition Subject: 
+	<br>
+	<input type="text" name="subject">
+	<br>
+	Expiration date for competition: 
+	<br>
+	<input type="date" name="expiration date" > 
+	<br>
+	Competition Desctiption: 
+	<br>
+	<input type="text" name="description" > <br>
+	<input type="submit" name="submit">
+
+</form>
+
+</body>
+</html>
