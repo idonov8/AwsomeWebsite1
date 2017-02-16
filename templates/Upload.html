@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style.css')}}">
 	<title>Upload</title>
 	<h1>Upload</h1>
 </head>
 <body>
-	<form action = "{{url_for('Upload')}}", method="post">
+	<form action = "{{url_for('Upload')}}", method="post", enctype="multipart/form-data">
 		<input type="file" name="pic" accept="image/*">
   		<input type="submit">
 	</form>

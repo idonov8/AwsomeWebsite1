@@ -3,11 +3,11 @@ from model import*
 import os
 import sqlite3
 from flask import Flask, request, session as login_session, g, redirect, url_for, abort, render_template, flash, send_from_directory
-from flask_dance.contrib.google import make_google_blueprint, google
-import json 
-import flask_login
-from flask_login import LoginManager, login_required, logout_user
-login_manager = LoginManager()
+#from flask_dance.contrib.google import make_google_blueprint, google
+#import json 
+#import flask_login
+#from flask_login import LoginManager, login_required, logout_user
+#login_manager = LoginManager()
 from datetime import datetime
 from flask_uploads import *
 
@@ -19,7 +19,7 @@ os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 app = Flask(__name__) # create the application instance :)
 app.config.from_object(__name__) # load config from this file , flaskr.py
 
-login_manager.init_app(app)
+#login_manager.init_app(app)
 
 engine = create_engine('sqlite:///PhotoComps.db')
 Base.metadata.bind = engine
@@ -28,28 +28,34 @@ session = DBSession()
 
 
 app.secret_key = "supersekrit"
+'''
 blueprint = make_google_blueprint(
     client_id="256940704567-4ta4m3aic8dn9gtnj12pfianjckrgrag.apps.googleusercontent.com",
     client_secret="s__arhyb5FMRxTJjdDaGuDQL",
-    scope=["profile", "email"]
-)
+    scope=["profile", "email"])
 app.register_blueprint(blueprint, url_prefix="/login")
-
+'''
 UPLOAD_FOLDER = 'uploads'
 
 #To do list:
-# - Make the css links work, start doing design
+
+# - Make the css links work, start doing design ####
+
 # - Find a way to use DateTime in competition table |V|
 # 	+ Finishing manager page |V|
 # - Discover Page
 # 	+ Somehow remember the photos the user voted for.
-# 	+ Writing the html, I need the picture to change when user vote
+
+# 	+ Writing the html, I need the picture to change when user vote ####
+
 # 	+ Creat a user profile page
 # - Uploading Pictures
-# 	+ html for it
-# 	+ How do i put a "list" of photos in one column of the user's table
+# 	+ html for it |V|
+
+# 	+ How do i put a "list" of photos in one column of the user's table 
 # 	+ Space in database for extra info about photographers (for the profile page)
-# - Deploy the webapp
+
+# - Deploy the webapp |V|
 
 
 @app.route('/', methods=['POST', 'GET'])
@@ -149,18 +155,22 @@ def Discover():
 	else:
 		return redirect(url_for('HomePage'))
 
-photos = UploadSet('photos', IMAGES)
 
 @app.route('/upload', methods=['POST', 'GET'])
 def Upload():
 	if request.method == 'POST':
-		img = photos.save(request.files['pic'])
-		rec = Photo(
-			imgURL=photos.url(img),
-			user_id=login_session['id'],
-			comp_id=compet.id,
-			numOfVotes=0)
-		rec.store()
+		pics = request.files['pic']
+		for pic in pics:
+			photo = Photo(
+				numOfVotes=0,
+				user_id=login_session['id'],
+				comp_id=login_session['compID'],
+				)
+			session.add(photo)
+			session.commit()
+			pic_filename = str(photo.id) + "_" + secure_filename(file.name) #file.filename?
+			pic.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_filename))
+			photo.uploadPhoto(pic_filename)
 		return redirect(url_for('CompHome'))
 
 	if 'id' not in login_session:

@@ -14,17 +14,27 @@ class User(Base):
 	id = Column(Integer, primary_key=True)
 	email = Column(String(255))
 	name = Column(String(255))
-	photos = relationship("Photo", back_populates='user')
+	uploaded_photos = relationship("Photo", back_populates='user')
+	voted_photos = relationship("VotedAssociation")
+	favorite_photos = relationship("FavoritesAssociation")
 	password = Column(String(255))
 	
 class Photo(Base):
 	__tablename__ = 'photo'
+	id = Column(Integer, primary_key=True)
 	avgRanking = Column(Float)
 	numOfVotes = Column(Integer)
-	imgURL = Column(String(255), primary_key=True)
+	imgURL = Column(String(255))
 	user_id = Column(Integer, ForeignKey('user.id'))
 	comp_id = Column(Integer, ForeignKey('competition.id'))
-	user = relationship("User", back_populates='photos')
+	user = relationship("User", back_populates='uploaded_photos')
+	competition = relationship("Comp", back_populates='photos')
+	voted_for = relationship("VotedAssociation")
+	favorited = relationship("FavoritesAssociation")
+
+	def uploadPhoto(self, photo):
+		self.imgURL = photo
+
 
 class Comp(Base):
 	__tablename__ = 'competition'
@@ -41,15 +51,22 @@ class Comp(Base):
 		else:
 			self.running = False
 
-	def addPhoto(self, photo):
-		self.photos.append(photo)
+class VotedAssociation(Base):
+	__tablename__ = 'voted_association'
+	photo_id = Column(Integer, ForeignKey('photo.id'), primary_key=True)
+	user_id = Column(Integer, ForeignKey('user.id'), primary_key=True)
+	user = relationship("User", back_populates="voted_photos")
+	photo = relationship("Photo", back_populates="voted_for")
+
+class FavoritesAssociation(Base):
+	__tablename__ = 'favorites_association'
+	photo_id = Column(Integer, ForeignKey('photo.id'), primary_key=True)
+	user_id = Column(Integer, ForeignKey('user.id'), primary_key=True)
+	user = relationship("User", back_populates="favorite_photos")
+	photo = relationship("Photo", back_populates="favorited")
 
 
-class Assosiacion(Base):
-	__tablename__ = 'assosiacion'
-	photoURL = Column(String(255), ForeignKey('photo.imgURL'), primary_key=True)
-	voted_id = Column(Integer, ForeignKey('user.id'), primary_key=True)
-	favorite_id = Column(Integer, ForeignKey('user.id'), primary_key=True)
+
 
 engine = create_engine('sqlite:///PhotoComps.db')
 
