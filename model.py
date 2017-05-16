@@ -14,6 +14,7 @@ class User(Base):
 	id = Column(Integer, primary_key=True)
 	email = Column(String(255))
 	name = Column(String(255))
+	#profile_photo = Column(Photo)
 	uploaded_photos = relationship("Photo", back_populates='user')
 	voted_photos = relationship("VotedAssociation")
 	favorite_photos = relationship("FavoritesAssociation")
@@ -32,8 +33,8 @@ class Photo(Base):
 	voted_for = relationship("VotedAssociation")
 	favorited = relationship("FavoritesAssociation")
 
-	def uploadPhoto(self, photo):
-		self.imgURL = photo
+	def uploadPhoto(self, url):
+		self.imgURL = url
 
 
 class Comp(Base):
@@ -46,7 +47,7 @@ class Comp(Base):
 	photos = relationship("Photo")
 
 	def ExpirationMechanism(self):
-		if self.expiration_date>datetime.today():
+		if self.expiration_date>=datetime.today():
 			self.running = True
 		else:
 			self.running = False

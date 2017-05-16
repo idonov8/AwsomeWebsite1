@@ -68,7 +68,6 @@ def HomePage():
 @app.route('/login', methods=['POST', 'GET'])
 def login(  ):
 	if request.method=='POST':
-		#insert login logic
 		email = request.form['email']
 		password = request.form['password']
 		user = session.query(User).filter_by(email=email).first()
@@ -105,18 +104,19 @@ def login(  ):
 		)
 		'''
 
-@app.route('/Competition')
+@app.route('/Competition', methods=['POST','GET'])
 def CompHome():
-	if 'id' in login_session:
+	if 'id' in login_session and request.method=='GET':
 		competitions = session.query(Comp).all()
 		for competition in competitions:
 			competition.ExpirationMechanism()
 			compet = session.query(Comp).filter_by(running=True).one_or_none()
-			login_session['compID'] = compet.id
 			if compet is not None:
-				return render_template('CompetitionHomePage.html', comp=compet)
-
+				login_session['compID'] = compet.id
+				return render_template('CompetitionHomePage.html', comp=compet, comps=competitions)
+			
 		return 'No competition is running at the moment.'
+
 	else:
 		return redirect(url_for('HomePage'))
 	
@@ -159,25 +159,26 @@ def Discover():
 @app.route('/upload', methods=['POST', 'GET'])
 def Upload():
 	if request.method == 'POST':
-		pics = request.files['pic']
-		for pic in pics:
-			photo = Photo(
+		pic = request.files['pic']
+		#for pic in pics:
+		photo = Photo(
 				numOfVotes=0,
 				user_id=login_session['id'],
 				comp_id=login_session['compID'],
 				)
-			session.add(photo)
-			session.commit()
-			pic_filename = str(photo.id) + "_" + secure_filename(file.name) #file.filename?
-			pic.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_filename))
-			photo.uploadPhoto(pic_filename)
-		return redirect(url_for('CompHome'))
+		pic_filename = str(photo.id) + "_" + secure_filename(str(file.name)) #file.filename?
+		pic.save(os.path.join(UPLOAD_FOLDER, pic_filename))
+		photo.uploadPhoto(pic_filename)
+		session.add(photo)
+		session.commit()
+		return redirect(url_for('CompHome'), )
 
 	if 'id' not in login_session:
 		return redirect(url_for('HomePage'))
 
-	else:	
-		return render_template('Upload.html')
+	else:
+		user = session.query(User).filter_by(id=login_session['id']).one()
+		return render_template('Upload.html', user=user)
 
 
 @app.route('/logout')
