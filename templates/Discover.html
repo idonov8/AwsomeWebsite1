@@ -6,10 +6,13 @@
 	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style.css')}}">
 </head>
 <body>
-	<img src="">
+	{%for photo in comp.photos%}
+	<img src='/Pictures/water_PNG3290.png'>
+	<br>
 	<button type="button" name="trash">Trash</button>
 	<button type="button" name="dislike">Dislike</button>
 	<button type="button" name="like">Like</button>
 	<button type="button" name="favorite">Add To Favorites</button>
+	{%endfor%}
 </body>
 </html>

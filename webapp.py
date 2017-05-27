@@ -49,10 +49,9 @@ UPLOAD_FOLDER = 'uploads'
 # 	+ Writing the html, I need the picture to change when user vote ####
 
 # 	+ Creat a user profile page
-# - Uploading Pictures
+# - Uploading Pictures 
 # 	+ html for it |V|
-
-# 	+ How do i put a "list" of photos in one column of the user's table 
+# 	+ How do i put a "list" of photos in one column of the user's table |V|
 # 	+ Space in database for extra info about photographers (for the profile page)
 
 # - Deploy the webapp |V|
@@ -155,7 +154,6 @@ def Discover():
 	else:
 		return redirect(url_for('HomePage'))
 
-
 @app.route('/upload', methods=['POST', 'GET'])
 def Upload():
 	if request.method == 'POST':
@@ -166,10 +164,11 @@ def Upload():
 				user_id=login_session['id'],
 				comp_id=login_session['compID'],
 				)
-		pic_filename = str(photo.id) + "_" + secure_filename(str(file.name)) #file.filename?
+		session.add(photo)
+		session.commit()
+		pic_filename = str(photo.id) + "_" + secure_filename(pic.name)
 		pic.save(os.path.join(UPLOAD_FOLDER, pic_filename))
 		photo.uploadPhoto(pic_filename)
-		session.add(photo)
 		session.commit()
 		return redirect(url_for('CompHome'), )
 
@@ -179,7 +178,6 @@ def Upload():
 	else:
 		user = session.query(User).filter_by(id=login_session['id']).one()
 		return render_template('Upload.html', user=user)
-
 
 @app.route('/logout')
 def logout():
