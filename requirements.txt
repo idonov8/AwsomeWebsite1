@@ -1,4 +1,4 @@
-adium-theme-ubuntu==0.3.4
+
 beautifulsoup4==4.4.1
 cffi==1.9.1
 chardet==2.3.0
