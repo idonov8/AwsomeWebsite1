@@ -7,7 +7,11 @@
 </head>
 <body>
 	{%for photo in comp.photos%}
-	<img src='/Pictures/water_PNG3290.png'>
+	<p>
+	
+	<img src="/static/uploads/{{photo.getURL()}}">
+	
+	</p>
 	<br>
 	<button type="button" name="trash">Trash</button>
 	<button type="button" name="dislike">Dislike</button>

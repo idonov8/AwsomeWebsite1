@@ -35,7 +35,7 @@ blueprint = make_google_blueprint(
     scope=["profile", "email"])
 app.register_blueprint(blueprint, url_prefix="/login")
 '''
-UPLOAD_FOLDER = 'uploads'
+UPLOAD_FOLDER = 'static/uploads'
 
 #To do list:
 
@@ -166,7 +166,7 @@ def Upload():
 				)
 		session.add(photo)
 		session.commit()
-		pic_filename = str(photo.id) + "_" + secure_filename(pic.name)
+		pic_filename = str(photo.id) + "_" + secure_filename(pic.name) + ".jpeg"
 		pic.save(os.path.join(UPLOAD_FOLDER, pic_filename))
 		photo.uploadPhoto(pic_filename)
 		session.commit()

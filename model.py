@@ -36,6 +36,9 @@ class Photo(Base):
 	def uploadPhoto(self, url):
 		self.imgURL = url
 
+	def getURL(self):
+		return self.imgURL
+
 
 class Comp(Base):
 	__tablename__ = 'competition'
