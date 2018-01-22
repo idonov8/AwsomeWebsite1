@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
+{%if 'id' in session%}
+	{%extends "layout.html" %}
+{%else%}
+	{%extends "layout2.html"%}
+{%endif%}
+{%block body%}
 	<title>Discover</title>
 	<h1>Discover</h1>
 	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style.css')}}">
@@ -8,15 +14,23 @@
 <body>
 	{%for photo in comp.photos%}
 	<p>
-	
-	<img src="/static/uploads/{{photo.getURL()}}">
-	
+	<img src="/static/uploads/{{photo.getURL()}}" height="300">
 	</p>
+	{%if 'id' in session%}
 	<br>
-	<button type="button" name="trash">Trash</button>
+	<form>
+	<button type="button", name="trash", onclick="redirect(url_for('Discover'))", method='post'>Trash</button>
 	<button type="button" name="dislike">Dislike</button>
 	<button type="button" name="like">Like</button>
 	<button type="button" name="favorite">Add To Favorites</button>
+	{%else%}
+	</form>
+	<h4>
+		<a href="{{url_for('login')}}">Login</a>
+		to vote.
+	</h4>
+	{%endif%}
 	{%endfor%}
+{%endblock%}
 </body>
 </html>

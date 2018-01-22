@@ -4,7 +4,7 @@ import os
 import sqlite3
 from flask import Flask, request, session as login_session, g, redirect, url_for, abort, render_template, flash, send_from_directory
 #from flask_dance.contrib.google import make_google_blueprint, google
-#import json 
+#import json
 #import flask_login
 #from flask_login import LoginManager, login_required, logout_user
 #login_manager = LoginManager()
@@ -43,26 +43,29 @@ UPLOAD_FOLDER = 'static/uploads'
 
 # - Find a way to use DateTime in competition table |V|
 # 	+ Finishing manager page |V|
-# - Discover Page
-# 	+ Somehow remember the photos the user voted for.
 
-# 	+ Writing the html, I need the picture to change when user vote ####
+# - Discover Page
+#	+ Write the algorithems for voting.
+# 	+ Somehow remember the photos the user voted for. 
+# 	+ Make the picture to change when user vote 
 
 # 	+ Creat a user profile page
+
 # - Uploading Pictures 
 # 	+ html for it |V|
 # 	+ How do i put a "list" of photos in one column of the user's table |V|
-# 	+ Space in database for extra info about photographers (for the profile page)
+
+# 	+ Space in database for extra info about photographers (for the profile page)------
 
 # - Deploy the webapp |V|
 
 
 @app.route('/', methods=['POST', 'GET'])
 def HomePage():
-	if request.method=='POST' or 'id' in login_session:
+	#if request.method=='POST' or 'id' in login_session:
 		return redirect(url_for('CompHome'))
-	else:
-		return render_template('HomePage.html')
+	#else:
+	#	return render_template('HomePage.html')
 
 @app.route('/login', methods=['POST', 'GET'])
 def login(  ):
@@ -87,6 +90,7 @@ def login(  ):
 			login_session['name'] = user.name
 			login_session['email'] = user.email
 			login_session['id'] = user.id
+			login_session['logged_in'] = True
 			return redirect(url_for('HomePage'))
 	else:
 		return render_template('login.html')
@@ -105,19 +109,19 @@ def login(  ):
 
 @app.route('/Competition', methods=['POST','GET'])
 def CompHome():
-	if 'id' in login_session and request.method=='GET':
+	#if 'id' in login_session and request.method=='GET':
 		competitions = session.query(Comp).all()
 		for competition in competitions:
 			competition.ExpirationMechanism()
 			compet = session.query(Comp).filter_by(running=True).one_or_none()
 			if compet is not None:
 				login_session['compID'] = compet.id
-				return render_template('CompetitionHomePage.html', comp=compet, comps=competitions)
+				return render_template('CompetitionHomePage.html', comp=compet, comps=competitions, session= login_session)
 			
 		return 'No competition is running at the moment.'
 
-	else:
-		return redirect(url_for('HomePage'))
+	#else:
+	#y	return redirect(url_for('HomePage'))
 	
 
 @app.route('/signup', methods=['POST', 'GET'])
@@ -144,15 +148,18 @@ def SignUp():
 			login_session['name'] = name
 			login_session['email'] = email
 			login_session['id'] = user.id
+			login_session['logged_in'] = True
 			return redirect(url_for('CompHome'))
 
 @app.route('/discover')
 def Discover():
-	if 'id' in login_session:
-		compet = session.query(Comp).filter_by(id=login_session['compID']).one()
-		return render_template('Discover.html', comp=compet)
-	else:
-		return redirect(url_for('HomePage'))
+	if request.method == 'POST':
+		return 'YEAHHHHH'
+	#if 'id' in login_session:
+	compet = session.query(Comp).filter_by(id=login_session['compID']).one()
+	return render_template('Discover.html', comp=compet, session=login_session)
+	#else:
+	#	return redirect(url_for('HomePage'))
 
 @app.route('/upload', methods=['POST', 'GET'])
 def Upload():
@@ -177,7 +184,7 @@ def Upload():
 
 	else:
 		user = session.query(User).filter_by(id=login_session['id']).one()
-		return render_template('Upload.html', user=user)
+		return render_template('Upload.html', user=user, session=login_session)
 
 @app.route('/logout')
 def logout():
@@ -188,6 +195,7 @@ def logout():
 	del login_session['name']
 	del login_session['email']
 	del login_session['id']
+	login_session['logged_in'] = False
 	return redirect(url_for('HomePage'))
 
 @app.route('/manager', methods=['POST','GET'])
