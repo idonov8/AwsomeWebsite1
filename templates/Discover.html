@@ -8,10 +8,13 @@
 {%endif%}
 {%block body%}
 	<title>Discover</title>
+    <center>
 	<h1>Discover</h1>
+        </center>
 	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style.css')}}">
 </head>
 <body>
+    <center>
 	{%for photo in comp.photos%}
 	<p>
 	<img src="/static/uploads/{{photo.getURL()}}" height="300">
@@ -29,6 +32,7 @@
 		<a href="{{url_for('login')}}">Login</a>
 		to vote.
 	</h4>
+        </center>
 	{%endif%}
 	{%endfor%}
 {%endblock%}

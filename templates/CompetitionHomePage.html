@@ -6,21 +6,44 @@
 	{%extends "layout2.html"%}
 {%endif%}  
 {%block body%}
-<head>
-	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style.css')}}">
-	<title>Compete!</title>
+   <!-- <style>
+    
+.button {
+    background-color: white; 
+    color: black; 
+    border: 2px solid #4CAF50;
+}
 
-	<h1>{{comp.subject}}</h1>
+.button:hover {
+    background-color: #4CAF50;
+    color: white;
+}
+    </style> -->
+<head>
+	<link rel="stylesheet" type="text/css" href="../static/style.css">
+	<title>Compete!</title>
+    
+    <center><h1>{{comp.subject}}</h1></center>
 </head>
 <body>
+<center>
 	<p>{{comp.description}}</p>
-	<a href="{{url_for('Discover')}}">Discover</a>
-	{%if 'id' in session%}
-	<a href="{{url_for('Upload')}}">Upload your work</a>
-	{%else%}
-	<a href="{{url_for('login')}}">Login to upload</a>
-	{%endif%}
 
+    <div class="main">    
+    
+	<a class="button" href="{{url_for('Discover')}}">Discover</a>
+    
+    
+    {%if 'id' in session%}
+	<a class="button" href="{{url_for('Upload')}}">Upload your work</a>
+	
+    {%else%}
+	<a class="button" href="{{url_for('login')}}">Login to upload</a>
+	
+    {%endif%}
+    </div>
+    
+</center>
 	<p>previous competitions:<br> (photos and stuff)</p>
 	</body>
 	{%endblock%}

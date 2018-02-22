@@ -1,9 +1,68 @@
 h1{
-	text-decoration-color: #F5FDC6;
-	
+    font-size: 36px; 
+    
 }
 
 body{
-	background: #F5FDC6;
+	background: #A8D0DB;
 	font-family: arial;
+    color: #2B4570;
 }
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #E49273;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px; 
+    text-decoration: none;
+}
+
+li a:hover {
+    background-color: #2B4570;
+}
+.main{
+    background-color: #2B4570;
+    padding: 30px;
+}
+.button{
+    padding: 16px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 2px 1px;
+    -webkit-transition-duration: 0.4s; 
+}
+.button {
+    background-color: white; 
+    color: black; 
+    /*border: 2px solid #E49273;*/
+    
+}
+
+.button:hover {
+    background-color: #E49273;
+    color: white;
+}
+
+
+
+/*
+    #7180AC
+    #2B4570
+    #A8D0DB
+    #E49273
+    #A37A74
+*/
