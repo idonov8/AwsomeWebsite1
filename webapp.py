@@ -11,7 +11,7 @@ from flask import Flask, request, session as login_session, g, redirect, url_for
 from datetime import datetime
 from flask_uploads import *
 #somethig for debug
-import loggin
+import logging
 
 #from dateutil.parser import parse
 #import pandas as pd
