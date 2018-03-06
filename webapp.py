@@ -11,9 +11,7 @@ from flask import Flask, request, session as login_session, g, redirect, url_for
 from datetime import datetime
 from flask_uploads import *
 #somethig for debug
-import logging
-app.logger.addHandler(logging.StreamHandler(sys.stdout))
-app.logger.setLevel(logging.ERROR)
+import loggin
 
 #from dateutil.parser import parse
 #import pandas as pd
@@ -221,5 +219,7 @@ def manager():
 		return render_template("manager.html")
 
 if __name__ == "__main__":
+	app.logger.addHandler(logging.StreamHandler(sys.stdout))
+	app.logger.setLevel(logging.ERROR)
 	app.debug=True
 	app.run()
