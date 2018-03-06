@@ -217,4 +217,5 @@ def manager():
 		return render_template("manager.html")
 
 if __name__ == "__main__":
-	app.run(debug=True)
+	app.debug=True
+	app.run()
