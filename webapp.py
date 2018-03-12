@@ -12,7 +12,6 @@ from datetime import datetime
 from flask_uploads import *
 from sqlalchemy import func
 
-
 #from dateutil.parser import parse
 #import pandas as pd
 
@@ -243,4 +242,5 @@ def manager():
 		return render_template("manager.html")
 
 if __name__ == "__main__":
-	app.run(debug=True)
+	app.debug=True
+	app.run()
