@@ -44,6 +44,11 @@
     </div>
     
 </center>
+
+	{%if photo %}
+	<h3>Heighest ranking right now</h3>
+	<img src="/static/uploads/{{photo.getURL()}}" height="300">
+	{%endif%}
 	<p>previous competitions:<br> (photos and stuff)</p>
 	</body>
 	{%endblock%}

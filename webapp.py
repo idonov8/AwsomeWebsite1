@@ -10,6 +10,8 @@ from flask import Flask, request, session as login_session, g, redirect, url_for
 #login_manager = LoginManager()
 from datetime import datetime
 from flask_uploads import *
+from sqlalchemy import func
+
 
 #from dateutil.parser import parse
 #import pandas as pd
@@ -113,11 +115,21 @@ def CompHome():
 		competitions = session.query(Comp).all()
 		for competition in competitions:
 			competition.ExpirationMechanism()
-			compet = session.query(Comp).filter_by(running=True).one_or_none()
+			compet = session.query(Comp).filter_by(running=True).one()
 			if compet is not None:
 				login_session['compID'] = compet.id
-				return render_template('CompetitionHomePage.html', comp=compet, comps=competitions, session= login_session)
-			
+
+				p = session.query(Photo).filter_by(comp_id=compet.id).all()
+				r = 0
+				if len(p) > 0:
+					photo = p[0]
+					for i in p:
+						if i.avgRanking >= r:
+							r=i.avgRanking
+							photo = i
+					return render_template('CompetitionHomePage.html', comp=compet, comps=competitions, session= login_session, photo=photo)
+				else:
+					return render_template('CompetitionHomePage.html', comp=compet, comps=competitions, session= login_session)
 		return 'No competition is running at the moment.'
 
 	#else:
@@ -151,12 +163,26 @@ def SignUp():
 			login_session['logged_in'] = True
 			return redirect(url_for('CompHome'))
 
-@app.route('/discover')
+@app.route('/discover', methods=['POST', 'GET'])
 def Discover():
+
 	if request.method == 'POST':
-		return 'YEAHHHHH'
+		rate = int(request.form['rate'])
+		url = request.form['photo']
+		photo = session.query(Photo).filter_by(imgURL=url).one()
+		i = login_session['id']
+		user = session.query(User).filter_by(id=i).one()
+		photo.vote(rate, user)
+		session.commit()
+		#return render_template('Discover.html', comp=compet, session=login_session, user=user)
 	#if 'id' in login_session:
 	compet = session.query(Comp).filter_by(id=login_session['compID']).one()
+	
+	if 'id' in login_session:
+		i = login_session['id']
+		user = session.query(User).filter_by(id=i).first()
+		return render_template('Discover.html', comp=compet, session=login_session, user=user, x=0)
+	
 	return render_template('Discover.html', comp=compet, session=login_session)
 	#else:
 	#	return redirect(url_for('HomePage'))

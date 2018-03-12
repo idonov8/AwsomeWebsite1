@@ -9,6 +9,15 @@ from datetime import datetime
 
 Base = declarative_base()
 
+
+class VotedAssociation(Base):
+	__tablename__ = 'voted_association'
+	photo_id = Column(Integer, ForeignKey('photo.id'), primary_key=True)
+	user_id = Column(Integer, ForeignKey('user.id'), primary_key=True)
+	user = relationship("User", back_populates="voted_photos")
+	photo = relationship("Photo", back_populates="voted_for") 
+
+
 class User(Base):
 	__tablename__ = 'user'
 	id = Column(Integer, primary_key=True)
@@ -16,21 +25,32 @@ class User(Base):
 	name = Column(String(255))
 	#profile_photo = Column(Photo)
 	uploaded_photos = relationship("Photo", back_populates='user')
-	voted_photos = relationship("VotedAssociation")
+	voted_photos = relationship("VotedAssociation", back_populates="user")
 	favorite_photos = relationship("FavoritesAssociation")
 	password = Column(String(255))
+
+	def getVoted(self):
+		a = []
+		for i in self.voted_photos:
+			a.append(i.photo)
+		return a
+
+
 	
 class Photo(Base):
 	__tablename__ = 'photo'
 	id = Column(Integer, primary_key=True)
-	avgRanking = Column(Float)
-	numOfVotes = Column(Integer)
+	avgRanking = Column(Float, default=0)
+	numOfVotes = Column(Integer, default=0)
 	imgURL = Column(String(255))
 	user_id = Column(Integer, ForeignKey('user.id'))
+
 	comp_id = Column(Integer, ForeignKey('competition.id'))
+
 	user = relationship("User", back_populates='uploaded_photos')
 	competition = relationship("Comp", back_populates='photos')
-	voted_for = relationship("VotedAssociation")
+	voted_for = relationship("VotedAssociation", back_populates="photo")
+
 	favorited = relationship("FavoritesAssociation")
 
 	def uploadPhoto(self, url):
@@ -38,6 +58,17 @@ class Photo(Base):
 
 	def getURL(self):
 		return self.imgURL
+
+	def vote(self, rating, user):
+		if self in user.getVoted():
+			pass
+		else:
+			a = VotedAssociation()
+			a.photo=self
+			a.user = user
+			self.voted_for.append(a)
+			self.numOfVotes += 1
+			self.avgRanking = (self.avgRanking + rating) / self.numOfVotes
 
 
 class Comp(Base):
@@ -55,12 +86,6 @@ class Comp(Base):
 		else:
 			self.running = False
 
-class VotedAssociation(Base):
-	__tablename__ = 'voted_association'
-	photo_id = Column(Integer, ForeignKey('photo.id'), primary_key=True)
-	user_id = Column(Integer, ForeignKey('user.id'), primary_key=True)
-	user = relationship("User", back_populates="voted_photos")
-	photo = relationship("Photo", back_populates="voted_for")
 
 class FavoritesAssociation(Base):
 	__tablename__ = 'favorites_association'
