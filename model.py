@@ -26,12 +26,18 @@ class User(Base):
 	#profile_photo = Column(Photo)
 	uploaded_photos = relationship("Photo", back_populates='user')
 	voted_photos = relationship("VotedAssociation", back_populates="user")
-	favorite_photos = relationship("FavoritesAssociation")
+	favorite_photos = relationship("FavoritesAssociation", back_populates="user")
 	password = Column(String(255))
 
 	def getVoted(self):
 		a = []
 		for i in self.voted_photos:
+			a.append(i.photo)
+		return a
+
+	def getFavorites(self):
+		a = []
+		for i in self.favorite_photos:
 			a.append(i.photo)
 		return a
 
@@ -51,7 +57,7 @@ class Photo(Base):
 	competition = relationship("Comp", back_populates='photos')
 	voted_for = relationship("VotedAssociation", back_populates="photo")
 
-	favorited = relationship("FavoritesAssociation")
+	favorited = relationship("FavoritesAssociation", back_populates="photo")
 
 	def uploadPhoto(self, url):
 		self.imgURL = url
@@ -62,13 +68,18 @@ class Photo(Base):
 	def vote(self, rating, user):
 		if self in user.getVoted():
 			pass
-		else:
-			a = VotedAssociation()
-			a.photo=self
-			a.user = user
-			self.voted_for.append(a)
-			self.numOfVotes += 1
-			self.avgRanking = (self.avgRanking + rating) / self.numOfVotes
+		elif rating == 2:
+			z = FavoritesAssociation()
+			z.photo=self
+			z.user=user
+			self.favorited.append(z)
+		
+		a = VotedAssociation()
+		a.photo=self
+		a.user = user
+		self.voted_for.append(a)
+		self.numOfVotes += 1
+		self.avgRanking = (self.avgRanking + rating) / self.numOfVotes
 
 
 class Comp(Base):

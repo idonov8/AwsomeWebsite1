@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{%extends "layout.html" %}
+
+	<title></title>
+</head>
+{%block body%}
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style.css')}}">
+<body>
+
+{%for photo in user.getFavorites()%}
+	<img src="/static/uploads/{{photo.getURL()}}" height="300">
+
+{%endfor%}
+
+</body>
+{%endblock%}
+</html>

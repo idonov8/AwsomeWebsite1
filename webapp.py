@@ -10,7 +10,6 @@ from flask import Flask, request, session as login_session, g, redirect, url_for
 #login_manager = LoginManager()
 from datetime import datetime
 from flask_uploads import *
-from sqlalchemy import func
 
 #from dateutil.parser import parse
 #import pandas as pd
@@ -67,6 +66,13 @@ def HomePage():
 		return redirect(url_for('CompHome'))
 	#else:
 	#	return render_template('HomePage.html')
+@app.route('/fav')
+def Favorites():
+	if 'id' in login_session:
+		user = session.query(User).filter_by(id=login_session['id']).one()
+		return render_template('favorites.html', user=user)
+	else:
+		return redirect(url_for('HomePage'))
 
 @app.route('/login', methods=['POST', 'GET'])
 def login(  ):
@@ -114,7 +120,7 @@ def CompHome():
 		competitions = session.query(Comp).all()
 		for competition in competitions:
 			competition.ExpirationMechanism()
-			compet = session.query(Comp).filter_by(running=True).one()
+			compet = session.query(Comp).filter_by(running=True).first()
 			if compet is not None:
 				login_session['compID'] = compet.id
 

@@ -1,4 +1,6 @@
 from model import *
+from webapp import*
+from flask_uploads import *
 
 #User
 user = User(
@@ -20,3 +22,23 @@ competition = Comp(
 	running=True)
 session.add(competition)
 session.commit()
+
+#Photos
+
+pics = []
+for i in range(7):
+	pics.append("../../Pictures" + str(i+1))
+
+for pic in pics:
+	photo = Photo(
+			numOfVotes=0,
+			user_id=1,
+			comp_id=competition.id,
+			)
+	session.add(photo)
+	session.commit()
+	pic_filename = str(photo.id) + "_" + secure_filename(pic) + ".jpeg"
+	os.path(pic).save(os.path.join(UPLOAD_FOLDER, pic_filename))
+	photo.uploadPhoto(pic_filename)
+	session.commit()
+		

@@ -17,7 +17,6 @@
 <body>
     <center>
     {%if 'id' in session%}
-    	<script type="text/javascript">var x = 0;</script>
     			{%for photo in comp.photos%}
 
 			{%if photo not in user.getVoted()%}
@@ -28,25 +27,25 @@
 	<br>
 	<div class = 'img'>
 	<form action = "{{url_for('Discover')}}", method="POST">
-		<input type="text" value="1" name="rate" style='display: none;'>
+		<input type="text" value="-4" name="rate" style='display: none;'>
 		<input type="text" value="{{photo.getURL()}}" name="photo" style='display: none;'>
 		<button type="submit", name="trash">Trash</button>
 	</form>
 
 	<form action = "{{url_for('Discover')}}", method="POST">
-		<input type="text" value="2" name="rate" style='display: none;'> 
+		<input type="text" value="-1" name="rate" style='display: none;'> 
 		<input type="text" value="{{photo.getURL()}}" name="photo" style='display: none;'>
 		<button type="submit" name="dislike">Dislike</button>
 	</form>
 
 	<form action = "{{url_for('Discover')}}", method="POST">
-		<input type="text" value="3" name="rate" style='display: none;'>
+		<input type="text" value="1" name="rate" style='display: none;'>
 		<input type="text" value="{{photo.getURL()}}" name="photo" style='display: none;'>
 		<button type="submit" name="like">Like</button>
 	</form>
 
 	<form action = "{{url_for('Discover')}}", method="POST">
-		<input type="text" value="4" name="rate" style='display: none;'>
+		<input type="text" value="2" name="rate" style='display: none;'>
 		<input type="text" value="{{photo.getURL()}}" name="photo" style='display: none;'>
 		<button type="submit" name="favorite">Add To Favorites</button>
 	</form>
@@ -54,24 +53,31 @@
 	{%endif%}
 	{%endfor%}
 
-	<script type="text/javascript">
+
+	{%else%}
+	{%for photo in comp.photos%}
+
+		<img class = 'img' src="/static/uploads/{{photo.getURL()}}" height="300">
+		<h4 class = 'img'>
+		<a  href="{{url_for('login')}}">Login</a> to vote.
+	</h4>
+	{%endfor%}
+	
+        </center>
+	
+	{%endif%}
+		<script type="text/javascript">
 
 	var abcElements = document.querySelectorAll('.img');
-
-// Set their ids
-for (var i = 2; i < abcElements.length; i++){
-	abcElements[i].style.display = "none";
-}
+	if (abcElements.length == 0){
+		document.write("No new images!")
+	}
+	// Set their ids
+	for (var i = 2; i < abcElements.length; i++){
+		abcElements[i].style.display = "none";
+	}
 
 </script>
-	{%else%}
-	</form>
-	<h4>
-		<a href="{{url_for('login')}}">Login</a>
-		to vote.
-	</h4>
-        </center>
-	{%endif%}
 	
 {%endblock%}
 </body>
